@@ -3,6 +3,9 @@
 <head>
   <title>TinyApp</title>
 </head>
+<header>
+    <% include ./partials/_header %>
+</header>
 <body>
   <% for (let keyURL in urls) { %>
      <li><%= keyURL + ": " + urls[keyURL] %></li>
