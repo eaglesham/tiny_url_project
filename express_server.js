@@ -45,8 +45,9 @@ app.get("/urls/:id", (req, res) => {
 
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  let random = generateRandomString();
+  urlDatabase[random] = req.body.longURL;
+  res.redirect(`http://localhost:8080/urls/${random}`)
 });
 
 app.get("/hello", (req, res) => {
