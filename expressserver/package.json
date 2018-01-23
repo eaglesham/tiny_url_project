@@ -1,0 +1,15 @@
+{
+  "name": "expressserver",
+  "version": "1.0.0",
+  "description": "for tiny URL project",
+  "main": "express_server.js",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "edward eaglesham",
+  "license": "ISC"
+}
