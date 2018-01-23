@@ -38,20 +38,20 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id, urls: urlDatabase };
-  res.render("urls_show", templateVars);
-});
-
-
 app.post("/urls", (req, res) => {
   let random = generateRandomString();
   urlDatabase[random] = req.body.longURL;
   res.redirect(`http://localhost:8080/urls/${random}`)
 });
 
-app.get("/hello", (req, res) => {
-  res.end("<html><body>Hello <b>World</b></body></html>\n");
+app.get("/urls/:id", (req, res) => {
+  let templateVars = { shortURL: req.params.id, urls: urlDatabase };
+  res.render("urls_show", templateVars);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  let longURL = urlDatabase[req.url.slice(3)];
+  res.redirect(longURL);
 });
 
 app.listen(PORT, () => {
