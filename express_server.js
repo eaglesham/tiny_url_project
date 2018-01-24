@@ -45,6 +45,10 @@ app.post("/urls", (req, res) => {
   res.redirect(`http://localhost:8080/urls/${random}`);
 });
 
+app.post("/urls/:id", (req, res) => {
+  urlDatabase[req.params.id] = req.body.longURL;
+});
+
 app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect('http://localhost:8080/urls/');

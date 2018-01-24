@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>TinyApp</title>
-  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-</head>
-<header>
+  <head>
+    <title>TinyApp</title>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  </head>
+  <header>
     <% include ./partials/_header %>
-</header>
-<body>
-  <% for (let keyURL in urls) { %>
-     <li><%= keyURL + ": " + urls[keyURL] %><form id="deleteURL" method="POST" action="/urls/<%= keyURL %>/delete">
-      <input form="deleteURL" type="submit" value="DELETE URL">
-     </form></li>
-  <% }; %>
-
-
+  </header>
+  <body>
+    <table>
+      <% for (let keyURL in urls) { %>
+      <tr><td><%= `${keyURL} : ${urls[keyURL]}  ` %></td>
+      <td>
+        <form id="deleteURL" method="POST" action="/urls/<%= keyURL %>/delete">
+          <input form="deleteURL" type="submit" value="DELETE URL">
+        </form>
+      </td>
+    </tr>
+    <% }; %>
+  </table>
   <a href=""> Shorten URL </a>
 </body>
 </html>
