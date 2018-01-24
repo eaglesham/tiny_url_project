@@ -1,7 +1,7 @@
 <h1>Tiny URL Project</h1>
 <table>
 
-  <% if (!username){ %>
+  <% if (!userObject){ %>
   <tr><td>
     <form action="/login" method="POST">
       <input id="login" type="text" name="username" placeholder="enter username" style="width: 300px">
@@ -10,7 +10,7 @@
   </td></tr>
   <% } else{ %>
   <tr><td>
-    <%= username %>
+    <%= userObject.email %>
   </td></tr>
   <tr><td>
     <form action="/logout" method="POST">
