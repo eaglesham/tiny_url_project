@@ -72,6 +72,14 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post("/register", (req, res) => {
   let userID = generateRandomString();
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).send('Error. Dint enter an email AND password, dumbass!');
+  }
+  for (let user in users) {
+    if (users[user].email === req.body.email) {
+      return res.status(400).send('Error. Yo that emails been taken!');
+    };
+  }
   users[userID] = {
     id: userID,
     email: req.body.email,
