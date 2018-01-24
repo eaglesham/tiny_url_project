@@ -12,6 +12,7 @@
     <table>
       <% for (let keyURL in urls) { %>
       <tr><td><%= `${keyURL} : ${urls[keyURL]}  ` %></td>
+      <td><a href="/urls/<%= keyURL %>">Edit</a>
       <td>
         <form id="deleteURL" method="POST" action="/urls/<%= keyURL %>/delete">
           <input form="deleteURL" type="submit" value="DELETE URL">
