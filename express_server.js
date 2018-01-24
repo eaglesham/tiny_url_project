@@ -38,11 +38,18 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+
 app.post("/urls", (req, res) => {
   let random = generateRandomString();
   urlDatabase[random] = req.body.longURL;
-  res.redirect(`http://localhost:8080/urls/${random}`)
+  res.redirect(`http://localhost:8080/urls/${random}`);
 });
+
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect('http://localhost:8080/urls/');
+})
+
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id, urls: urlDatabase };
@@ -55,5 +62,5 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`Express server listening on port ${PORT}`);
 });
