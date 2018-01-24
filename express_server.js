@@ -63,6 +63,11 @@ app.post("/login", (req, res) => {
   res.redirect('http://localhost:8080/urls/');
 })
 
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("http://localhost:8080/urls/");
+})
+
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id, urls: urlDatabase, username: req.cookies["username"] };
