@@ -28,17 +28,28 @@ const users = {
   "mikeUserID": {
     id: "mikeUserID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: "a"
   },
  "ikeUserID": {
     id: "ikeUserID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: "b"
   }
+}
+
+
+function findUsername (username) {
+  return users.find((user) => user.username === username);
 }
 
 app.get("/", (req, res) => {
   res.end("Hello!");
+//set up condition to go to urls page(?) if logged in. else go to login. set up findUsername function first!!
+  // if(findUsername(req.cookies.current_user)) {
+  //   res.redirect('http://localhost:8080/urls/')
+  // } else {
+  //   res.redirect('http://localhost:8080/login')
+  // }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -111,14 +122,20 @@ app.post("/urls/:id/delete", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  let loggedIn = {};
-  // iterate through users in users object checking email. -if email there return response with 403. etc. check other required loops and if neither set to [next line]
-  res.cookie("user_id", loggedIn);
-  res.redirect('http://localhost:8080/');
+  for (let userObject in users) {
+    if (req.body.email !== users[userObject].email) {
+      return res.status(403).send('email not registered');
+    } else if (req.body.email === users[userObject].email && req.body.password !== users[userObject].password) {
+      return res.status(403).send('incorrect password');
+    } else if (req.body.email === users[userObject].email && req.body.password === users[userObject].password) {
+      res.cookie("user_id", users[userObject].id);
+      return res.redirect('http://localhost:8080/');
+    };
+  };
 })
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("http://localhost:8080/urls/");
 })
 
