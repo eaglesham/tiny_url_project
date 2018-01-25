@@ -1,4 +1,7 @@
 <h1>Tiny URL Project</h1>
+<% if (userObject) { %>
+  <h3>Welcome <%= userObject.email%>!</h3>
+<% }; %>
 
 
 <% if (!userObject) { %>

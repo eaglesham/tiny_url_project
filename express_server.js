@@ -92,6 +92,7 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: req.body.password
   };
+  console.log(users);
   res.cookie("user_id", userID);
   res.redirect('http://localhost:8080/urls/');
 })
@@ -104,6 +105,7 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.longURL;
+  res.redirect('http://localhost:8080/urls/')
 });
 
 app.post("/urls/:id/delete", (req, res) => {
@@ -112,21 +114,22 @@ app.post("/urls/:id/delete", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
+  let flag = true;
   for (let userObject in users) {
-    if (req.body.email !== users[userObject].email) {
-      return res.status(403).send('email not registered');
-    } else if (req.body.email === users[userObject].email && req.body.password !== users[userObject].password) {
-      return res.status(403).send('incorrect password');
-    } else if (req.body.email === users[userObject].email && req.body.password === users[userObject].password) {
+    if(req.body.email === users[userObject].email && req.body.password === users[userObject].password) {
+      flag = false;
       res.cookie("user_id", users[userObject].id);
       return res.redirect('http://localhost:8080/');
     };
   };
-})
+  if (flag) {
+    return res.status(403).send('incorrect username or password');
+  }
+});
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
-  res.redirect("http://localhost:8080/urls/");
+  res.redirect("http://localhost:8080/login/");
 })
 
 
