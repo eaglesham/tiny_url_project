@@ -45,7 +45,11 @@ app.get("/", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = { userObject: users[req.cookies["user_id"]] }
-  res.render("urls_new", templateVars);
+  if (req.cookies["user_id"]) {
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect('http://localhost:8080/login/');
+  }
 });
 
 app.get("/urls.json", (req, res) => {
