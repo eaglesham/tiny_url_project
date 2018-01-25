@@ -43,6 +43,7 @@ app.get("/", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = { userObject: users[req.cookies["user_id"]] }
+  console.log("TESTING THIS----", req.cookies["user_id"])
   res.render("urls_new", templateVars);
 });
 
@@ -56,8 +57,13 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("urls_register")
-})
+  res.render("urls_register");
+});
+
+app.get("/login", (req, res) => {
+  let templateVars = { userObject: users[req.cookies["user_id"]] }
+  res.render("urls_login", templateVars);
+});
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id, urls: urlDatabase, userObject: users[req.cookies["user_id"]] };
@@ -105,8 +111,10 @@ app.post("/urls/:id/delete", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
-  res.redirect('http://localhost:8080/urls/');
+  let loggedIn = {};
+  // iterate through users in users object checking email. -if email there return response with 403. etc. check other required loops and if neither set to [next line]
+  res.cookie("user_id", loggedIn);
+  res.redirect('http://localhost:8080/');
 })
 
 app.post("/logout", (req, res) => {
