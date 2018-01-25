@@ -1,3 +1,17 @@
 <h1>Tiny URL Project</h1>
-<a href="http://localhost:8080/register/">Register</a>
-<a href="http://localhost:8080/login/">Login</a>
+
+<form action="http://localhost:8080/register/">
+    <input type="submit" value="Register" />
+</form>
+
+<% if (!userObject) { %>
+  <form action="http://localhost:8080/login/">
+      <input type="submit" value="Login" />
+  </form>
+<% } else { %>
+  <form action="/logout" method="POST">
+      <input type="submit" value="logout">
+  </form>
+<% }; %>
+
+

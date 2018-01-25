@@ -37,24 +37,14 @@ const users = {
   }
 }
 
-
-function findUsername (username) {
-  return users.find((user) => user.username === username);
-}
-
 app.get("/", (req, res) => {
   res.end("Hello!");
 //set up condition to go to urls page(?) if logged in. else go to login. set up findUsername function first!!
-  // if(findUsername(req.cookies.current_user)) {
-  //   res.redirect('http://localhost:8080/urls/')
-  // } else {
-  //   res.redirect('http://localhost:8080/login')
-  // }
+
 });
 
 app.get("/urls/new", (req, res) => {
   let templateVars = { userObject: users[req.cookies["user_id"]] }
-  console.log("TESTING THIS----", req.cookies["user_id"])
   res.render("urls_new", templateVars);
 });
 
@@ -77,7 +67,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id, urls: urlDatabase, userObject: users[req.cookies["user_id"]] };
+  let templateVars = { userObject: users[req.cookies["user_id"]], shortURL: req.params.id, urls: urlDatabase, userObject: users[req.cookies["user_id"]] };
   res.render("urls_show", templateVars);
 });
 
