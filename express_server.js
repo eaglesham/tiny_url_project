@@ -63,7 +63,7 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase, userObject: users[req.cookies["user_id"]] };
-  res.render("urls_index", templateVars);
+    res.render("urls_index", templateVars);
 });
 
 app.get("/register", (req, res) => {
@@ -77,7 +77,11 @@ app.get("/login", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { userObject: users[req.cookies["user_id"]], shortURL: req.params.id, urls: urlDatabase, userObject: users[req.cookies["user_id"]] };
-  res.render("urls_show", templateVars);
+  if (req.cookies["user_id"]) {
+    res.render("urls_show", templateVars);
+  } else {
+    res.redirect('http://localhost:8080/login/')
+  }
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -108,8 +112,6 @@ app.post("/register", (req, res) => {
 app.post("/urls", (req, res) => {
   let random = generateRandomString();
   urlDatabase[random] = {userID: req.cookies["user_id"], longURL: req.body.longURL};
-  console.log(urlDatabase);
-  //urlDatabase[random] = req.body.longURL;
   res.redirect(`http://localhost:8080/urls/${random}`);
 });
 

@@ -9,18 +9,21 @@
     <% include ./partials/_header %>
   </header>
   <body>
-    <table>
-      <% for (let keyURL in urls) { %>
-      <tr><td><%= `${keyURL} : ${urls[keyURL].longURL}  ` %></td>
-      <td><a href="/urls/<%= keyURL %>">Edit</a>
-      <td>
-        <form id="deleteURL" method="POST" action="/urls/<%= keyURL %>/delete">
-          <input form="deleteURL" type="submit" value="DELETE URL">
-        </form>
-      </td>
-    </tr>
+    <% if (!userObject) { %>
+      <p>Login or register to view Tiny URL database</p>
+    <% } else { %>
+      <table>
+        <% for (let keyURL in urls) { %>
+        <tr><td><%= `${keyURL} : ${urls[keyURL].longURL}  ` %></td>
+        <td><a href="/urls/<%= keyURL %>">Edit</a>
+        <td>
+          <form id="deleteURL" method="POST" action="/urls/<%= keyURL %>/delete">
+            <input form="deleteURL" type="submit" value="DELETE URL">
+          </form>
+        </td></tr>
+        <% }; %>
+      </table>
     <% }; %>
-  </table>
   <a href="http://localhost:8080/urls/new/"> Shorten URL </a>
 </body>
 </html>
