@@ -23,7 +23,7 @@ function generateRandomString() {
 }
 
 const personalURLs = {};
-
+//generates collection of URLs from database that are assigned to that user id
 function urlsForUser(id) {
   personalURLs[id] = {};
   for (let key in urlDatabase) {
@@ -96,13 +96,18 @@ app.get("/login", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { userObject: users[req.session["user_id"]], shortURL: req.params.id, urls: urlDatabase, userObject: users[req.session["user_id"]] };
-  if (req.session["user_id"]) {
+  //sends "URL does not exist" error page if short URL edit page is not of a short URL owned by the logged in user
+  //sends "please login" error page if not logged in
+  if (req.session["user_id"] && (req.session["user_id"] !== urlDatabase[req.params.id].userID)) {
+    res.send("This short URL does not exist.")
+  } else if (req.session["user_id"]) {
     res.render("urls_show", templateVars);
   } else {
-    res.redirect('http://localhost:8080/login/')
+    res.send("Please login or register");
   }
 });
 
+//page that redirects short URL to full URL
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
@@ -111,6 +116,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post("/register", (req, res) => {
   let userID = generateRandomString();
+  //sends error message if email or password field is submitted empty
   if (!req.body.email || !req.body.password) {
     return res.status(400).send('Error. Dint enter an email AND password, dumbass!');
   }
@@ -128,17 +134,20 @@ app.post("/register", (req, res) => {
   res.redirect('http://localhost:8080/urls/');
 })
 
+//creates new URL in database with random number as key
 app.post("/urls", (req, res) => {
   let random = generateRandomString();
   urlDatabase[random] = {userID: req.session["user_id"], longURL: req.body.longURL};
   res.redirect(`http://localhost:8080/urls/${random}`);
 });
 
+//updates long URL paramter within user's selection of URLs. Accessed from Update button 
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id].longURL = req.body.longURL;
   res.redirect('http://localhost:8080/urls/')
 });
 
+//accessed from delete button. Deletes given URL from database
 app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect('http://localhost:8080/urls/');
@@ -146,6 +155,7 @@ app.post("/urls/:id/delete", (req, res) => {
 
 app.post("/login", (req, res) => {
   let flag = true;
+  //verifies that username and password match records in user database. If not sends error page.
   for (let userObject in users) {
     if(req.body.email === users[userObject].email && bcrypt.compareSync(req.body.password, users[userObject].password)) {
       flag = false;
@@ -157,7 +167,7 @@ app.post("/login", (req, res) => {
     return res.status(403).send('incorrect username or password');
   }
 });
-
+//all cookies cleared on logout
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("http://localhost:8080/login/");
