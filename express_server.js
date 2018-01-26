@@ -1,12 +1,17 @@
-var express = require("express");
-var app = express();
-var PORT = process.env.PORT || 8080; // default port 8080
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2', 'key3']
+}));
 
 app.set("view engine", "ejs");
 
@@ -46,12 +51,12 @@ const users = {
   "mikeUserID": {
     id: "mikeUserID",
     email: "user@example.com",
-    password: "a"
+    password: bcrypt.hashSync("a", 10)
   },
  "ikeUserID": {
     id: "ikeUserID",
     email: "user2@example.com",
-    password: "b"
+    password: bcrypt.hashSync("b", 10)
   }
 }
 
@@ -62,8 +67,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = { userObject: users[req.cookies["user_id"]] }
-  if (req.cookies["user_id"]) {
+  let templateVars = { userObject: users[req.session["user_id"]] }
+  if (req.session["user_id"]) {
     res.render("urls_new", templateVars);
   } else {
     res.redirect('http://localhost:8080/login/');
@@ -75,8 +80,8 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  urlsForUser(req.cookies["user_id"]);
-  let templateVars = { urls: personalURLs[req.cookies["user_id"]], userObject: users[req.cookies["user_id"]] };
+  urlsForUser(req.session["user_id"]);
+  let templateVars = { urls: personalURLs[req.session["user_id"]], userObject: users[req.session["user_id"]] };
   res.render("urls_index", templateVars);
 });
 
@@ -85,13 +90,13 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  let templateVars = { userObject: users[req.cookies["user_id"]] }
+  let templateVars = { userObject: users[req.session["user_id"]] }
   res.render("urls_login", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { userObject: users[req.cookies["user_id"]], shortURL: req.params.id, urls: urlDatabase, userObject: users[req.cookies["user_id"]] };
-  if (req.cookies["user_id"]) {
+  let templateVars = { userObject: users[req.session["user_id"]], shortURL: req.params.id, urls: urlDatabase, userObject: users[req.session["user_id"]] };
+  if (req.session["user_id"]) {
     res.render("urls_show", templateVars);
   } else {
     res.redirect('http://localhost:8080/login/')
@@ -119,13 +124,13 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 10)
   };
-  res.cookie("user_id", userID);
+  req.session["user_id"] = userID;
   res.redirect('http://localhost:8080/urls/');
 })
 
 app.post("/urls", (req, res) => {
   let random = generateRandomString();
-  urlDatabase[random] = {userID: req.cookies["user_id"], longURL: req.body.longURL};
+  urlDatabase[random] = {userID: req.session["user_id"], longURL: req.body.longURL};
   res.redirect(`http://localhost:8080/urls/${random}`);
 });
 
@@ -144,7 +149,7 @@ app.post("/login", (req, res) => {
   for (let userObject in users) {
     if(req.body.email === users[userObject].email && bcrypt.compareSync(req.body.password, users[userObject].password)) {
       flag = false;
-      res.cookie("user_id", users[userObject].id);
+      req.session["user_id"] = users[userObject].id;
       return res.redirect('http://localhost:8080/');
     };
   };
@@ -154,7 +159,7 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  delete req.session.user_id;
   res.redirect("http://localhost:8080/login/");
 })
 
