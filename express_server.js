@@ -10,18 +10,23 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 function generateRandomString() {
-
-   var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for(var i = 0; i < 6; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for(var i = 0; i < 6; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }
 
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    userID: 'practice', 
+    longURL: "http://www.lighthouselabs.ca"
+  },
+  "9sm5xK": {
+    userID: 'practice',
+    longURL: "http://www.google.com"
+  }
 };
 
 const users = {
@@ -96,14 +101,15 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: req.body.password
   };
-  console.log(users);
   res.cookie("user_id", userID);
   res.redirect('http://localhost:8080/urls/');
 })
 
 app.post("/urls", (req, res) => {
   let random = generateRandomString();
-  urlDatabase[random] = req.body.longURL;
+  urlDatabase[random] = {userID: req.cookies["user_id"], longURL: req.body.longURL};
+  console.log(urlDatabase);
+  //urlDatabase[random] = req.body.longURL;
   res.redirect(`http://localhost:8080/urls/${random}`);
 });
 
