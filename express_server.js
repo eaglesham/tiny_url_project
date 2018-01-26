@@ -2,12 +2,10 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2', 'key3']
@@ -61,9 +59,11 @@ const users = {
 }
 
 app.get("/", (req, res) => {
-  res.end("Hello!");
-//set up condition to go to urls page(?) if logged in. else go to login. set up findUsername function first!!
-
+  if (users[req.session["user_id"]]) {
+    res.redirect('http://localhost:8080/urls/');
+  } else {
+    res.redirect('http://localhost:8080/login/');
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -135,7 +135,7 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL;
+  urlDatabase[req.params.id].longURL = req.body.longURL;
   res.redirect('http://localhost:8080/urls/')
 });
 
@@ -159,7 +159,7 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  delete req.session.user_id;
+  req.session = null;
   res.redirect("http://localhost:8080/login/");
 })
 
