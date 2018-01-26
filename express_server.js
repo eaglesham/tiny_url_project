@@ -18,13 +18,25 @@ function generateRandomString() {
   return text;
 }
 
+const personalURLs = {};
+
+function urlsForUser(id) {
+  personalURLs[id] = {};
+  for (let key in urlDatabase) {
+    if (urlDatabase[key].userID === id) {
+      personalURLs[id][key] = urlDatabase[key];
+    }
+  }
+};
+
+
 var urlDatabase = {
   "b2xVn2": {
-    userID: 'practice', 
+    userID: 'mikeUserID', 
     longURL: "http://www.lighthouselabs.ca"
   },
   "9sm5xK": {
-    userID: 'practice',
+    userID: 'mikeUserID',
     longURL: "http://www.google.com"
   }
 };
@@ -62,8 +74,9 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase, userObject: users[req.cookies["user_id"]] };
-    res.render("urls_index", templateVars);
+  urlsForUser(req.cookies["user_id"]);
+  let templateVars = { urls: personalURLs[req.cookies["user_id"]], userObject: users[req.cookies["user_id"]] };
+  res.render("urls_index", templateVars);
 });
 
 app.get("/register", (req, res) => {
