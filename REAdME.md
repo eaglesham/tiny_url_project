@@ -5,6 +5,9 @@ Due to lack of funding for this project, it has sacrificed all aesthetic appeal 
 
 ## Final Product
 
+!["Screenshot of URLs page"](https://github.com/eaglesham/tiny_url_project/blob/master/docs/TinyApp_screenshot_home.png?raw=true)
+!["Screenshot of update page"](https://github.com/eaglesham/tiny_url_project/blob/master/docs/TinyApp_screenshot_edits.png?raw=true)
+
 ## Dependencies
 
 - Node.js
