@@ -56,7 +56,7 @@ const users = {
     email: "user2@example.com",
     password: bcrypt.hashSync("b", 10)
   }
-}
+};
 
 app.get("/", (req, res) => {
   if (users[req.session["user_id"]]) {
